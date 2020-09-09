@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.bootcss.com/angular.js/1.7.0/angular.min.js"></script>
+<script src="https://cdn.bootcss.com/angular.js/1.7.0/angular-route.min.js"></script>
+<title>index</title>
+<style>
+    body{
+        background-color: black;
+        margin: auto;
+    }
+    nav{
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        background-color: #aaa;
+        margin: auto;;
+    }
+   
+    ul{
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        flex-wrap: wrap;
+    }
+    li{
+        margin: auto 10%;
+        list-style-type: none;
+        box-sizing: border-box;   
+    }
+    li a{
+        text-decoration: none;
+        padding: 10px;
+       
+        color: blue;
+        box-sizing: border-box;
+    }
+</style>
+</head>
+<body ng-app="myApp">
+    <nav ng-controller="navController">
+        <ul>
+            <li>
+               {{date}} {{time}}
+            </li>
+        </ul>
+        <ul>
+            <li><a href="#!/login">login</a></li>
+            <li><a href="#!/todoList">todoList</a></li>
+        </ul>
+        <ul>
+            <li ng-show="LogInId">{{LogInId}}&nbsp 歡迎
+                <a href="#" ng-click="logOut()">登出</a>
+            </li>
+        </ul>
+    </nav>
+    
+    <div ng-view>
+    </div>
+    <script>
+        angular.module('myApp',['ngRoute']) 
+        .controller('navController' ,function($scope,$rootScope,$interval){
+          $scope.logOut = function(){
+             
+            $rootScope.LogInId = '';
+          }
+          $scope.date = new Date().toLocaleDateString();
+              $interval(function(){
+                  $scope.time = new Date().toLocaleTimeString();
+                  
+              })
+              
+        })       
+        .controller('loginController',function ($scope,$rootScope,$location,$interval,$timeout){
+            $scope.showSuccess = function(form){
+            return form.$valid;
+            }
+            
+      
+            $scope.logIn = function(){ 
+                $location.path('/todoList');
+                $rootScope.LogInId = $scope.logInId;  
+                console.log($rootScope.LogInId)
+            }
+            
+            $scope.timer = false;
+            $scope.timeout = 1000;
+            $scope.timerCount = $scope.timeout / 1000;
+            $scope.text ="獲取";
+            $scope.onClick = function(){
+                $scope.showTimer = true;
+                $scope.timer = true;
+                $scope.text = "秒後重新獲取";
+                var counter = $interval(function(){
+                     $scope.timerCount = $scope.timerCount - 1;
+                },1000);
+                $timeout(function(){
+                    $scope.text = "獲取";
+                    $scope.timer = false;
+                    $interval.cancel(counter);
+                    $scope.showTimer = false;
+                    $scope.timerCount = $scope.timeout / 1000;
+                },$scope.timeout);
+            }
+            
+                      
+        })
+        
+        .config(['$routeProvider', function($routeProvider){
+            $routeProvider
+            
+            .when('/todoList',{templateUrl:'todoList.html'})
+            .when('/login',{templateUrl:'login.html',controller:'loginController'})
+            .otherwise({redirectTo:'/'});
+        }])
+        .directive('sizeChange',function(){
+            return {
+                restrict: 'EA',
+                template:   `<span class="ct">
+                                <button ng-click="addPx()">+</button>
+                                    <span ng-class="{'done-true':todo.done}" ng-model="todo.text">{{todo.text}}</span>
+                                <button ng-click="lowerPx()">-</button>
+                            </span>`,     
+                link:function ($scope,element,attr) {
+
+                    element.children("span").bind("mouseenter",function () {
+                        element.children("span").addClass("cc");
+                     
+                    });
+                    element.children("span").bind("mouseleave",function () {
+                        element.children("span").removeClass("cc");
+                     
+                    });
+
+                    var num = 16;
+                    
+                    $scope.addPx = function(){ 
+                       
+                        if(num==30){
+                        return ;
+                        
+                     
+                        }else{
+                            num++;
+                        element.css('font-size',num +'px') ; 
+                        }
+                        console.log(num)
+                        }
+
+                    $scope.lowerPx =function(){
+                        if(num==10){
+                        return '';
+                     
+                        }else{
+
+                        num--;
+                        element.css('font-size',num +'px') ; 
+                        }
+                        console.log(num)
+                    }   
+                } 
+            }
+        });
+       
+    </script>
+    <script src="todo.js"></script>
+</body>
+</html>

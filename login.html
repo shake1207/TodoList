@@ -1,0 +1,117 @@
+
+    <style>
+        body{
+            background-color: black;
+            width: 100%;
+            height: 100vh;
+            margin: auto;
+            
+        }
+        section{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: auto;
+            width: 100%;
+            height: 100vh;
+        }
+        .form{
+            min-width: 100px;
+            max-width: 300px;
+            width: 100%;
+            min-height: 200px;
+            max-height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            background-color:#ccc;
+            padding: 20px;
+            border-radius: 10px;
+         
+
+        }
+        .text{
+            width: 100%;
+            height: 30px;
+            border-radius: 5px;
+        }
+        alert {
+            width: 100%;
+            text-align: center;
+            display:none;
+                
+}
+        .error {
+            display:block;
+            color:red;    
+        }
+        .valid {
+            display:block;
+            color:blue;    
+        }
+      
+        .text:focus{
+            outline: 0;
+        }
+       
+        .text.ng-valid{
+            border: 1px solid green;
+        }
+    
+        .text.ng-dirty.ng-invalid{
+            background-color: pink;
+        }
+        .good{
+            width: 100%;
+            text-align: center;
+            color:green;
+        }
+       
+    </style>
+<body ng-app="myApp">
+    <section ng-controller="loginController">   
+        <form class="form" name="form1">
+            帳號<input type="text"  
+                       class="text"  
+                       name="id" 
+                       ng-model="logInId" 
+                       pattern="^.{3,8}$" 
+                       onkeypress="if(event.keyCode <=45 || event.keyCode >= 57 )event.returnValue = false"
+                       placeholder="帳號長度 3 ~ 8" 
+                       autocomplete="off" 
+                       required>
+                
+                <alert ng-class="{'error':form1.id.$error.pattern}">長度不足</alert>
+                <span class="good" ng-show="showSuccess(form1.id)">輸入正確</span>
+
+            密碼<input type="text" 
+                       class="text"  
+                       name="pass" 
+                       ng-model="pass" 
+                       ng-pattern="/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,10}$/"
+                       onkeyup="value=value.replace(/[\W]/g,'')"
+                       onkeypress="if(event.keyCode ==32)event.returnValue = false"
+                       placeholder="例:Ab1234" autocomplete="off" 
+                       required>
+                       
+                <alert ng-class="{'error':form1.pass.$error.pattern}">密碼不符合規範</alert>
+                <span class="good" ng-show="showSuccess(form1.pass)">輸入正確</span>
+
+            再次輸入密碼
+                <input type="text" 
+                       class="text"  
+                       name="repass" 
+                       ng-model="repass" 
+                       required>
+            
+                <span style="color:red" ng-show="pass!=repass">兩次密碼不對</span>
+                <button ng-click="onClick(cc)" ng-disabled="timer">
+                    <span ng-if="showTimer">{{timerCount}}</span>{{text}}
+                </button>
+
+                <input type="submit" ng-disabled="form1.$invalid" ng-click="logIn()">
+        </form>
+    </section>
+</body>

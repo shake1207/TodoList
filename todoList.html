@@ -1,0 +1,77 @@
+
+            <link rel="stylesheet" href="todo.css">
+        <section>
+            <div class="box"  ng-controller="TodoListController">
+                <h1>Todolist</h1>
+                <div>FontSize:
+                    <input type="button"  value="sm" ng-click="sm()">
+                    <input type="button"  value="ml" ng-click="ml()">
+                    <input type="button"  value="lg" ng-click="lg()">
+                </div>
+                <div class="search">
+                    <span>Search</span>
+                    <input type="text" ng-model="search.text" value="Search">
+                </div>
+                
+                <div class="boxlist">s
+                    <span>未完成{{remaining()}} 已完成{{completed()}}</span>
+                    <form ng-submit="addTodo()">
+                        <input class="text" type="text" ng-model="todoText" name="todoText" size="30" placeholder="輸入">
+                        <input class="add" type="submit" value="Add">
+                    </form>
+                    <ul>未完成
+                        <li ng-repeat="todo in todos | filter:{'state' :false} | filter:{'chang' :true} | filter:search">
+                            <label ng-class="setStyle()">
+                                <div>
+                                    ({{$index + 1}}) 
+                                    <span class="chk"> 
+                                        <input type="checkbox" ng-model="todo.done" ng-checked="selectAll" ng-click="echoChange(todo.checked,selectAll)"> 
+                                    </span>
+                                    
+                                </div>
+                               
+                                <div ng-hide="todo.editing"> 
+                                   
+                                        <size-change></size-change>
+                                  
+                                </div>
+                                <div ng-show="todo.editing">
+                                    <input type="text" value="{{todo.text}}" ng-model="todo.text">
+                                    <button ng-click="save(todo)">儲存</button>
+                                </div> 
+                                <span>已於{{todo.time}}新增</span>
+                                <div>
+                                    <input type="button" ng-model="todo.state" ng-click="consummation(todo.key)" value="完成">
+                                    <input type="button" ng-click="edit(todo)" value="修改">
+                                    <input type="button" ng-click="delete(todo.key)" value="刪除">
+                                </div>                         
+                            </label>   
+                        </li>
+                    </ul>
+                    <ul>已完成
+                        <li ng-repeat="todo in todos | filter:{'state' : true}| filter:{'chang' : true} | filter:search" >
+                            <label ng-hide="checked" ng-class="setStyle()"> 
+                                <div>
+                                    ({{$index + 1}})
+                                   
+                                </div>
+                                 <span ng-class-odd="{'state-true':todo.text}">{{todo.text}}</span> 
+                                 <div>
+                                     <span>已於{{todo.time}}完成</span>
+                                    <input type="button" ng-model="checked"  ng-click="delChang(todo.key)" value="刪除"> 
+                                 </div>
+                            </label>
+                        </li>
+                    </ul>
+
+                    <div class="btn">
+                        <div>
+                            <input type="checkbox"  ng-change="all(selectAll)" ng-model="selectAll">選取全部
+                        </div>
+                        <button ng-click="archive()" >Archive
+                       
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section> 
